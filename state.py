@@ -1,5 +1,5 @@
 class State:
-    def __init__(self, index: int, is_final: bool):
+    def __init__(self, index: int = 0, is_final: bool = False):
         self.INDEX = index
         self.IS_FINAL = is_final
 

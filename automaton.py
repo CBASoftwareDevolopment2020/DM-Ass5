@@ -31,7 +31,9 @@ class Automaton:
             self._INSTANCES[log_entry.instance] = self.initial_state
 
         state = self._INSTANCES[log_entry.instance]
-        self._INSTANCES[log_entry.instance] = self._TABLE[state.index][self._ALPHABET.index_of(log_entry.action)]
+        state_index = state.index
+        symbol_index = self._ALPHABET.index_of(log_entry.action)
+        self._INSTANCES[log_entry.instance] = self._TABLE[state_index][symbol_index]
 
         return self._INSTANCES[log_entry.instance]
 
@@ -43,7 +45,7 @@ class AbcdAutomaton(Automaton):
         for index in range(1, self._ALPHABET.size()):
             self._STATES.append(State(index, True if index == 3 else False))
 
-        # A(B|C)*D
+        # (A(B|C)*D)*
         self._TABLE = [[None for _ in range(self._ALPHABET.size())] for _ in range(len(self._STATES))]
         self._TABLE[0][0] = self._STATES[1]
         self._TABLE[1][1] = self._STATES[1]
@@ -52,3 +54,4 @@ class AbcdAutomaton(Automaton):
         self._TABLE[2][1] = self._STATES[1]
         self._TABLE[2][2] = self._STATES[2]
         self._TABLE[2][3] = self._STATES[3]
+        self._TABLE[3][0] = self._STATES[1]
