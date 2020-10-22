@@ -1,7 +1,9 @@
 from typing import List
+from collections import defaultdict
 
 from alphabet import Alphabet, AbcdAlphabet
 from state import State
+from log_entry import LogEntry
 
 
 class Automaton:
@@ -10,6 +12,7 @@ class Automaton:
         self._INITIAL_STATE = State(0, False)
         self._STATES = [self._INITIAL_STATE]
         self._TABLE = [[]]
+        self._INSTANCES = defaultdict(State)
 
     @property
     def alphabet(self) -> Alphabet:
@@ -23,8 +26,14 @@ class Automaton:
     def initial_state(self) -> State:
         return self._INITIAL_STATE
 
-    def next_state(self, state: State, symbol: chr) -> State:
-        return self._TABLE[state.index][self._ALPHABET.index_of(symbol)]
+    def next_state(self, log_entry: LogEntry) -> State:
+        if not self._INSTANCES[log_entry.instance]:
+            self._INSTANCES[log_entry.instance] = self.initial_state
+
+        state = self._INSTANCES[log_entry.instance]
+        self._INSTANCES[log_entry.instance] = self._TABLE[state.index][self._ALPHABET.index_of(log_entry.action)]
+
+        return self._INSTANCES[log_entry.instance]
 
 
 class AbcdAutomaton(Automaton):
